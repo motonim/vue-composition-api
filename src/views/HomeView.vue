@@ -14,8 +14,12 @@
       <button @click="handleClick">stop watching</button>
     </div>
 
-    <hr>
-    <PostList v-if="showPosts" :posts="posts" />
+    <hr>    
+    <div v-if="posts.length">
+      <PostList v-if="showPosts" :posts="posts" />
+    </div>
+    <div v-else>Loading...</div>
+    <div v-if="error">{{ error }}</div>
     <button @click="showPosts = !showPosts">toggle posts</button>
     <button @click="posts.pop()">delete a post</button>
   </div>
@@ -70,14 +74,29 @@ export default {
 
     // -------------------------------
 
-    const posts = ref([
-      { title: 'welcome to the blog', body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in imperdiet nisi. Vestibulum eu dui dictum, ornare est non, dignissim dui. Donec at ex nulla. Aenean sem tortor, bibendum ac accumsan vel, elementum vel turpis. Nam auctor egestas pulvinar. Aenean placerat finibus finibus. Praesent dictum velit at purus aliquam, sit amet mattis est molestie. Duis a nulla et mauris luctus feugiat nec cursus odio. Nam elementum vitae est eu porttitor. Nulla vestibulum gravida magna eu ultricies. Nunc posuere tincidunt pellentesque. Sed id condimentum nisl, ultricies viverra orci. Fusce sit amet massa ut nibh feugiat elementum ac id est.', id: 1 },
-      { title: 'top 5 CSS tips', body: 'lorem ipsum', id: 2 },
-    ])
+    const posts = ref([])
+    const error = ref(null)
 
     const showPosts = ref(true)
 
-    return { name, names, age, handleName, p, search, matchingNames, handleClick, posts, showPosts }
+    const load = async() => {
+      try {
+        let data = await fetch('http://localhost:3000/posts')
+        // console.log(data)
+        if(!data.ok) {
+          throw Error('no data available')
+        }
+        posts.value = await data.json();
+      }
+      catch (err) {
+        error.value = err.message // updating const error value
+        console.log(error.value)
+      }
+    }
+
+    load()
+
+    return { name, names, age, handleName, p, search, matchingNames, handleClick, posts, showPosts, error }
 
     // return { name, age, handleClick, p}
   }
