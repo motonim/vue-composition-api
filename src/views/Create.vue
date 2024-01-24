@@ -21,6 +21,7 @@
 
 <script>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 export default {
     setup() {
@@ -28,6 +29,8 @@ export default {
         const body = ref('')
         const tag = ref('')
         const tags =  ref([])
+
+        const router = useRouter()
 
         const handleKeydown = () => {
             if(!tags.value.includes(tag.value)) {
@@ -43,25 +46,19 @@ export default {
         // const error = ref(null)
 
         const handleSubmit = async() => {
-            // try {
-                let data = {
-                    title: title.value,
-                    body: body.value,
-                    tags: tags.value
-                }
+            let data = {
+                title: title.value,
+                body: body.value,
+                tags: tags.value
+            }
 
-                await fetch('http://localhost:3000/posts',  {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                })
-                
-
-            // }
-            // catch (err) {
-                // error.value = err.message
-                // console.log(error.value)
-            // }
+            await fetch('http://localhost:3000/posts',  {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            
+            router.push({ name: 'home' })
         }
 
         return { title, body, tag, tags, handleKeydown, handleSubmit } 

@@ -33,6 +33,15 @@
       "tags": [
         "html"
       ]
+    },
+    {
+      "id": "3e7e",
+      "title": "Router test",
+      "body": "body",
+      "tags": [
+        "router",
+        "vue"
+      ]
     }
   ]
 }
